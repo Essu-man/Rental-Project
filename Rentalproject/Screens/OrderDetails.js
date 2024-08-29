@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const OrderDetails = () => {
   const route = useRoute();
@@ -13,19 +14,24 @@ const OrderDetails = () => {
   const hirerContact = '0551234567';
   const hirerEmail = 'johndoe@example.com';
   const location = 'Accra, Ghana';
-  const costPerDay = '₵120'; // Example cost, update this based on selectedCategory
+  
+  // Define cost per day based on category
+  const categoryCostMap = {
+    'Tractors': '₵120',
+    'Harvesters': '₵150',
+    'Balers': '₵100',
+    'Plows': '₵80',
+    'Sprayers': '₵90',
+    'Cultivators': '₵110',
+  };
+  
+  const costPerDay = categoryCostMap[selectedCategory] || '₵0';
   const [rentalDuration, setRentalDuration] = useState(1); // Default 1 day
-
-  if (!selectedCategory) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Error: No category selected.</Text>
-      </View>
-    );
-  }
+  const [startDate, setStartDate] = useState(new Date());
+  const [returnDate, setReturnDate] = useState(new Date());
 
   const calculateTotalCost = () => {
-    return rentalDuration * parseInt(costPerDay.replace('₵', ''));
+    return rentalDuration * parseInt(costPerDay.replace('₵', ''), 10);
   };
 
   const handleConfirmOrder = () => {
@@ -64,6 +70,14 @@ const OrderDetails = () => {
     }
   };
 
+  if (!selectedCategory) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.errorText}>Error: No category selected.</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       {/* Header Section */}
@@ -74,18 +88,37 @@ const OrderDetails = () => {
         <Text style={styles.headerTitle}>Order Details</Text>
       </View>
 
-      {/* Selected Equipment Information */}
-      <View style={styles.section}>
-        <Image source={renderEquipmentImage()} style={styles.equipmentImage} />
-        <Text style={styles.equipmentName}>{selectedCategory}</Text>
-        {selectedType && <Text style={styles.equipmentType}>{selectedType}</Text>}
-        <Text style={styles.costPerDay}>{costPerDay} / Day</Text>
+      {/* Order Details Box */}
+      <View style={styles.detailsBox}>
+        <Image source={renderEquipmentImage()} style={styles.detailsImage} />
+        <View style={styles.detailsContent}>
+          <Text style={styles.equipmentName}>{selectedCategory}</Text>
+          {selectedType && <Text style={styles.equipmentType}>{selectedType}</Text>}
+          <Text style={styles.costPerDay}>{costPerDay} / Day</Text>
+        </View>
       </View>
 
-      {/* Order Summary */}
+      {/* Date Pickers */}
+      <View style={styles.datePickerContainer}>
+        <Text style={styles.dateLabel}>Start Date:</Text>
+        <DateTimePicker
+          value={startDate}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => setStartDate(selectedDate || startDate)}
+        />
+        <Text style={styles.dateLabel}>Return Date:</Text>
+        <DateTimePicker
+          value={returnDate}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => setReturnDate(selectedDate || returnDate)}
+        />
+      </View>
+
+      {/* Rental Duration */}
       <View style={styles.section}>
-        <Text style={styles.subHeader}>Order Summary</Text>
-        <Text style={styles.detailText}>Location: {location}</Text>
+        <Text style={styles.subHeader}>Rental Duration</Text>
         <View style={styles.rentalDurationContainer}>
           <Text style={styles.detailText}>Duration:</Text>
           <Text style={styles.durationValue}>{rentalDuration} Day(s)</Text>
@@ -150,37 +183,45 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: 16,
   },
-  section: {
+  detailsBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#f8f8f8',
     marginBottom: 20,
+    elevation: 2,
   },
-  equipmentImage: {
-    width: '100%',
-    height: 200,
-    resizeMode: 'contain',
+  detailsImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 10,
+  },
+  detailsContent: {
+    flex: 1,
   },
   equipmentName: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginTop: 8,
   },
   equipmentType: {
-    fontSize: 18,
+    fontSize: 16,
     color: 'gray',
-    marginTop: 4,
   },
   costPerDay: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#3d9d75',
-    marginTop: 4,
   },
-  subHeader: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  datePickerContainer: {
+    marginBottom: 20,
+  },
+  dateLabel: {
+    fontSize: 16,
     marginBottom: 8,
   },
-  detailText: {
-    fontSize: 16,
-    marginBottom: 4,
+  section: {
+    marginBottom: 20,
   },
   rentalDurationContainer: {
     flexDirection: 'row',
