@@ -1,4 +1,4 @@
-package com.rentalproject
+package com.anonymous.Rentalproject
 
 import android.app.Application
 import android.content.res.Configuration

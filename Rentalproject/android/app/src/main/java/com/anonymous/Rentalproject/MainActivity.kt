@@ -1,4 +1,4 @@
-package com.rentalproject
+package com.anonymous.Rentalproject
 
 import android.os.Build
 import android.os.Bundle
