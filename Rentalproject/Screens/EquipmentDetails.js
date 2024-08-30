@@ -97,29 +97,37 @@ const EquipmentDetails = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.orderSummary}>
+      {/* Back Arrow */}
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={24} color="#333" />
+      </TouchableOpacity>
+
+      <View style={styles.headerContainer}>
         <Text style={styles.orderSummaryTitle}>Equipment Details</Text>
-        {selectedCategory && (
-          <View style={styles.imageContainer}>
-            {renderEquipmentImage()}
-          </View>
-        )}
-        <View style={styles.hirerInfoCard}>
-          <View style={styles.hirerInfo}>
-            <Text style={styles.hirerName}>John Doe</Text>
-            <View style={styles.contactActions}>
-              <TouchableOpacity onPress={handleContactPress} style={styles.contactButton}>
-                <Ionicons name="call" size={24} color="#FFF" />
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleEmailPress} style={styles.contactButton}>
-                <Ionicons name="mail" size={24} color="#FFF" />
-              </TouchableOpacity>
-            </View>
+      </View>
+
+      {selectedCategory && (
+        <View style={styles.imageContainer}>
+          {renderEquipmentImage()}
+        </View>
+      )}
+
+      <View style={styles.hirerInfoCard}>
+        <View style={styles.hirerInfo}>
+          <Text style={styles.hirerName}>John Doe</Text>
+          <View style={styles.contactActions}>
+            <TouchableOpacity onPress={handleContactPress} style={styles.contactButton}>
+              <Ionicons name="call" size={24} color="#FFF" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleEmailPress} style={styles.contactButton}>
+              <Ionicons name="mail" size={24} color="#FFF" />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
 
-      <View style={styles.infoCardsContainer}>
+      {/* New section for Cost and Location */}
+      <View style={styles.infoRowContainer}>
         <View style={styles.infoCard}>
           <Ionicons name="cash" size={24} color="#3d9d75" style={styles.icon} />
           <View style={styles.infoTextContainer}>
@@ -202,7 +210,7 @@ const EquipmentDetails = () => {
           <View style={styles.infoTextContainer}>
             <Text style={styles.infoTitle}>Tool Info</Text>
             <Text style={styles.infoText}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              This tool is essential for ensuring smooth operations in the field, offering reliability and efficiency.
             </Text>
           </View>
         </View>
@@ -214,7 +222,7 @@ const EquipmentDetails = () => {
           <View style={styles.infoTextContainer}>
             <Text style={styles.infoTitle}>Terms & Conditions</Text>
             <Text style={styles.infoText}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla volutpat ligula vel est sollicitudin, at pretium quam fermentum.
+              By booking this equipment, you agree to our terms and conditions. Ensure proper handling and timely return to avoid penalties.
             </Text>
           </View>
         </View>
@@ -226,73 +234,87 @@ const EquipmentDetails = () => {
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
     padding: 20,
   },
-  orderSummary: {
-    marginBottom: 20,
+  backButton: {
+    position: 'absolute',
+    left: -15,
+    top: 0,
     padding: 15,
+    zIndex: 1,
+  },
+  headerContainer: {
+    alignItems: 'center',
+    marginBottom: 10,
   },
   orderSummaryTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: -10,
+    textAlign: 'center',
+    marginTop: 25,
   },
   imageContainer: {
-    marginTop: 35,
+    marginBottom: 30,
     alignItems: 'center',
   },
+  equipmentImage: {
+    width: 350,
+    height: 180,
+    borderRadius: 15,
+  },
   hirerInfoCard: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
+    backgroundColor: '#fff',
     padding: 15,
-    marginBottom: -20,
+    marginBottom: 20,
+    borderRadius: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 10, height: 2 },
     shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+    elevation: 2,
   },
   hirerInfo: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   hirerName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
   },
   contactActions: {
     flexDirection: 'row',
-    marginLeft: 20,
   },
   contactButton: {
     backgroundColor: '#3d9d75',
-    padding: 10,
     borderRadius: 50,
+    padding: 8,
     marginLeft: 10,
   },
-  infoCardsContainer: {
+  infoRowContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
   },
   infoCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 10,
-    padding: 15,
-    flex: 1,
-    marginHorizontal: 5,
+    backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+    elevation: 2,
+    flex: 1,
+    marginRight: 10,
   },
   icon: {
     marginRight: 10,
@@ -303,78 +325,70 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
   },
   infoText: {
     fontSize: 14,
-    color: '#666',
+    color: '#333',
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   subHeader: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
+    marginBottom: 15,
+  },
+  categoryContainer: {
+    paddingLeft: 5,
   },
   categoryBox: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
+    backgroundColor: '#fff',
     paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
+    borderRadius: 20,
     marginRight: 10,
   },
   selectedCategoryBox: {
     backgroundColor: '#3d9d75',
   },
   categoryText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
-    marginBottom: 5,
   },
   selectedCategoryText: {
-    color: '#FFF',
+    color: '#fff',
   },
-  categoryContainer: {
-    paddingVertical: 10,
+  typeContainer: {
+    paddingLeft: 5,
   },
   typeBox: {
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
+    backgroundColor: '#fff',
     paddingVertical: 10,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
     marginRight: 10,
   },
   selectedTypeBox: {
     backgroundColor: '#3d9d75',
   },
   typeText: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#333',
   },
   selectedTypeText: {
-    color: '#FFF',
-  },
-  typeContainer: {
-    paddingVertical: 5,
-  },
-  equipmentImage: {
-    width: '100%',
-    height: 180,
-    borderRadius: 10,
+    color: '#fff',
   },
   bookButton: {
     backgroundColor: '#3d9d75',
-    borderRadius: 10,
-    paddingVertical: 15,
+    padding: 15,
+    borderRadius: 8,
     alignItems: 'center',
-    marginTop: -15,
+    marginTop: 10,
   },
   bookButtonText: {
-    fontSize: 18,
+    color: '#fff',
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFF',
   },
 });
 
