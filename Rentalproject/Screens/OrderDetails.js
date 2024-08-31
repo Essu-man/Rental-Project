@@ -1,60 +1,52 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';   
-import { Calendar } from 'react-native-calendars';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
 
 const OrderDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { selectedCategory, selectedType, baseCostPerDay = 0, location } = route.params;
 
-  // State for selected dates and total cost
-  const [selectedDates, setSelectedDates] = useState({});
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [totalCost, setTotalCost] = useState(0);
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
 
-  // Validate baseCostPerDay
   useEffect(() => {
-    if (typeof baseCostPerDay !== 'number' || isNaN(baseCostPerDay)) {
-      console.error('Invalid baseCostPerDay:', baseCostPerDay);
-      setTotalCost(0);
+    if (startDate && endDate) {
+      const start = moment(startDate);
+      const end = moment(endDate);
+      const numberOfDays = end.diff(start, 'days') + 1; // +1 to include the end date
+      const newTotalCost = numberOfDays * baseCostPerDay;
+      setTotalCost(newTotalCost.toFixed(2));
     }
-  }, [baseCostPerDay]);
+  }, [startDate, endDate, baseCostPerDay]);
 
-  // Update total cost based on selected dates
-  const updateTotalCost = (newSelectedDates) => {
-    const numberOfDays = Object.keys(newSelectedDates).length;
-    const newTotalCost = numberOfDays * baseCostPerDay;
-    setTotalCost(newTotalCost.toFixed(2)); // Update total cost with 2 decimal places
-  };
-
-  // Handle date selection
-  const handleDayPress = (day) => {
-    const newSelectedDates = { ...selectedDates };
-    if (newSelectedDates[day.dateString]) {
-      // If the date is already selected, deselect it
-      delete newSelectedDates[day.dateString];
-    } else {
-      // Otherwise, select the date
-      newSelectedDates[day.dateString] = { selected: true, marked: true };
+  const handleDateChange = (event, selectedDate, type) => {
+    const currentDate = selectedDate || new Date();
+    if (type === 'start') {
+      setShowStartPicker(Platform.OS === 'ios');
+      setStartDate(moment(currentDate).format('YYYY-MM-DD'));
+    } else if (type === 'end') {
+      setShowEndPicker(Platform.OS === 'ios');
+      setEndDate(moment(currentDate).format('YYYY-MM-DD'));
     }
-    setSelectedDates(newSelectedDates);
-    updateTotalCost(newSelectedDates);
   };
 
-  // Navigate to edit details
-  const handleEditDetailsPress = () => {
-    navigation.navigate('EquipmentDetails');
-  };
-
-  // Confirm the order
   const handleConfirmOrderPress = () => {
-    alert('Order confirmed!');
+    if (startDate && endDate) {
+      alert(`Order confirmed!\nStart Date: ${startDate}\nEnd Date: ${endDate}`);
+    } else {
+      Alert.alert('Error', 'Please select both start and end dates.');
+    }
   };
 
   return (
     <ScrollView style={styles.container}>
-      {/* Back Arrow */}
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={24} color="#333" />
       </TouchableOpacity>
@@ -73,14 +65,32 @@ const OrderDetails = () => {
         <Text style={styles.detailText}>{location}</Text>
       </View>
 
-      {/* Calendar for selecting rental dates */}
+      {/* Date Picker for selecting rental dates */}
       <View style={styles.orderDetailsContainer}>
-        <Text style={styles.sectionTitle}>Select Rental Dates</Text>
-        <Calendar
-          onDayPress={handleDayPress}
-          markedDates={selectedDates}
-          markingType={'multi-dot'}
-        />
+        <Text style={styles.sectionTitle}>Select Start Date</Text>
+        <TouchableOpacity style={styles.dateButton} onPress={() => setShowStartPicker(true)}>
+          <Text style={styles.dateText}>{startDate || 'Select Start Date'}</Text>
+        </TouchableOpacity>
+        {showStartPicker && (
+          <DateTimePicker
+            value={startDate ? new Date(startDate) : new Date()}
+            mode="date"
+            display="default"
+            onChange={(event, date) => handleDateChange(event, date, 'start')}
+          />
+        )}
+        <Text style={styles.sectionTitle}>Select End Date</Text>
+        <TouchableOpacity style={styles.dateButton} onPress={() => setShowEndPicker(true)}>
+          <Text style={styles.dateText}>{endDate || 'Select End Date'}</Text>
+        </TouchableOpacity>
+        {showEndPicker && (
+          <DateTimePicker
+            value={endDate ? new Date(endDate) : new Date()}
+            mode="date"
+            display="default"
+            onChange={(event, date) => handleDateChange(event, date, 'end')}
+          />
+        )}
       </View>
 
       <View style={styles.orderDetailsContainer}>
@@ -88,7 +98,7 @@ const OrderDetails = () => {
         <Text style={styles.detailText}>{totalCost} GHS</Text>
       </View>
 
-      <TouchableOpacity style={styles.editButton} onPress={handleEditDetailsPress}>
+      <TouchableOpacity style={styles.editButton} onPress={() => navigation.navigate('EquipmentDetails')}>
         <Text style={styles.editButtonText}>Edit Details</Text>
       </TouchableOpacity>
 
@@ -139,6 +149,18 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   detailText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  dateButton: {
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    marginBottom: 15,
+  },
+  dateText: {
     fontSize: 14,
     color: '#333',
   },
