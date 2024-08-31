@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';   
-
+import { useNavigation, useRoute } from '@react-navigation/native';   
 import { Calendar } from 'react-native-calendars';
 
 const OrderDetails = () => {
@@ -10,40 +9,45 @@ const OrderDetails = () => {
   const route = useRoute();
   const { selectedCategory, selectedType, baseCostPerDay = 0, location } = route.params;
 
-  // State for selected dates
+  // State for selected dates and total cost
   const [selectedDates, setSelectedDates] = useState({});
-  const [totalCost, setTotalCost] = useState(0); // Initialize total cost to 0
+  const [totalCost, setTotalCost] = useState(0);
 
+  // Validate baseCostPerDay
   useEffect(() => {
     if (typeof baseCostPerDay !== 'number' || isNaN(baseCostPerDay)) {
       console.error('Invalid baseCostPerDay:', baseCostPerDay);
-      setTotalCost(0); // Set a default value if the base cost is invalid
+      setTotalCost(0);
     }
   }, [baseCostPerDay]);
 
-  // Calculate and update total cost based on the number of selected dates
+  // Update total cost based on selected dates
   const updateTotalCost = (newSelectedDates) => {
     const numberOfDays = Object.keys(newSelectedDates).length;
     const newTotalCost = numberOfDays * baseCostPerDay;
-    setTotalCost(newTotalCost);
+    setTotalCost(newTotalCost.toFixed(2)); // Update total cost with 2 decimal places
   };
 
-  // Handle date selection and update total cost
+  // Handle date selection
   const handleDayPress = (day) => {
     const newSelectedDates = { ...selectedDates };
     if (newSelectedDates[day.dateString]) {
+      // If the date is already selected, deselect it
       delete newSelectedDates[day.dateString];
     } else {
+      // Otherwise, select the date
       newSelectedDates[day.dateString] = { selected: true, marked: true };
     }
     setSelectedDates(newSelectedDates);
     updateTotalCost(newSelectedDates);
   };
 
+  // Navigate to edit details
   const handleEditDetailsPress = () => {
     navigation.navigate('EquipmentDetails');
   };
 
+  // Confirm the order
   const handleConfirmOrderPress = () => {
     alert('Order confirmed!');
   };
@@ -81,7 +85,7 @@ const OrderDetails = () => {
 
       <View style={styles.orderDetailsContainer}>
         <Text style={styles.sectionTitle}>Total Cost</Text>
-        <Text style={styles.detailText}>{totalCost.toFixed(2)} GHS</Text>
+        <Text style={styles.detailText}>{totalCost} GHS</Text>
       </View>
 
       <TouchableOpacity style={styles.editButton} onPress={handleEditDetailsPress}>
@@ -94,6 +98,7 @@ const OrderDetails = () => {
     </ScrollView>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

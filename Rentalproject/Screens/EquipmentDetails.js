@@ -63,7 +63,7 @@ const EquipmentDetails = () => {
       navigation.navigate('OrderDetails', {
         selectedCategory,
         selectedType,
-        cost: getCategoryCost(),
+        baseCostPerDay: parseFloat(getCategoryCost().replace(/₵|\/Day/g, '')),
         location: 'Accra, Ghana',
       });
     } else {
@@ -126,23 +126,22 @@ const EquipmentDetails = () => {
         </View>
       </View>
 
-      {/* New section for Cost and Location */}
       <View style={styles.infoRowContainer}>
-        <View style={styles.infoCard}>
-          <Ionicons name="cash" size={24} color="#3d9d75" style={styles.icon} />
-          <View style={styles.infoTextContainer}>
-            <Text style={styles.infoTitle}>Cost</Text>
-            <Text style={styles.infoText}>{getCategoryCost()}</Text>
-          </View>
-        </View>
-        <View style={styles.infoCard}>
-          <Ionicons name="location" size={24} color="#3d9d75" style={styles.icon} />
-          <View style={styles.infoTextContainer}>
-            <Text style={styles.infoTitle}>Location</Text>
-            <Text style={styles.infoText}>Accra, Ghana</Text>
-          </View>
-        </View>
-      </View>
+  <View style={styles.infoCard}>
+    <Ionicons name="cash" size={24} color="#3d9d75" style={styles.icon} />
+    <View style={styles.infoTextContainer}>
+      <Text style={styles.infoTitle}>Cost</Text>
+      <Text style={styles.infoText}>{getCategoryCost()}</Text>
+    </View>
+  </View>
+  <View style={styles.infoCard}>
+    <Ionicons name="location" size={24} color="#3d9d75" style={styles.icon} />
+    <View style={styles.infoTextContainer}>
+      <Text style={styles.infoTitle}>Location</Text>
+      <Text style={styles.infoText}>Accra, Ghana</Text>
+    </View>
+  </View>
+</View>
 
       <View style={styles.section}>
         <Text style={styles.subHeader}>Category</Text>
@@ -256,32 +255,28 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 25,
+    marginTop: 20,
   },
   imageContainer: {
-    marginBottom: 30,
     alignItems: 'center',
+    marginVertical: 20,
   },
   equipmentImage: {
-    width: 350,
-    height: 180,
-    borderRadius: 15,
+    width: 250,
+    height: 150,
+    borderRadius: 10,
   },
   hirerInfoCard: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
+    borderRadius: 10,
     padding: 15,
     marginBottom: 20,
-    borderRadius: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    elevation: 5,
   },
   hirerInfo: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   hirerName: {
     fontSize: 18,
@@ -293,7 +288,7 @@ const styles = StyleSheet.create({
   contactButton: {
     backgroundColor: '#3d9d75',
     borderRadius: 50,
-    padding: 8,
+    padding: 10,
     marginLeft: 10,
   },
   infoRowContainer: {
@@ -302,22 +297,20 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   infoCard: {
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 10,
     padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
     flex: 1,
-    marginRight: 10,
+    marginHorizontal: 10,
+    flexDirection: 'row', // Align items horizontally
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
   },
   icon: {
-    marginRight: 10,
+    marginRight: 10, // Space between icon and text
   },
   infoTextContainer: {
     flex: 1,
@@ -325,28 +318,27 @@ const styles = StyleSheet.create({
   infoTitle: {
     fontSize: 16,
     fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 5,
   },
   infoText: {
     fontSize: 14,
-    color: '#333',
+    color: '#666',
   },
+
   section: {
-    marginBottom: 10,
-  },
-  subHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
+    marginBottom: 20,
   },
   categoryContainer: {
-    paddingLeft: 5,
+    flexGrow: 1,
   },
   categoryBox: {
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    marginRight: 10,
+    backgroundColor: '#FFF',
+    borderRadius: 15,
+    padding: 15,
+    marginHorizontal: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   selectedCategoryBox: {
     backgroundColor: '#3d9d75',
@@ -356,17 +348,18 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   selectedCategoryText: {
-    color: '#fff',
+    color: '#FFF',
   },
   typeContainer: {
-    paddingLeft: 5,
+    flexGrow: 1,
   },
   typeBox: {
-    backgroundColor: '#fff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
-    marginRight: 10,
+    backgroundColor: '#FFF',
+    borderRadius: 15,
+    padding: 15,
+    marginHorizontal: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   selectedTypeBox: {
     backgroundColor: '#3d9d75',
@@ -376,17 +369,16 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   selectedTypeText: {
-    color: '#fff',
+    color: '#FFF',
   },
   bookButton: {
     backgroundColor: '#3d9d75',
+    borderRadius: 10,
     padding: 15,
-    borderRadius: 8,
     alignItems: 'center',
-    marginTop: 10,
   },
   bookButtonText: {
-    color: '#fff',
+    color: '#FFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
