@@ -1,18 +1,44 @@
+import React, { useState, useEffect } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import React from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';   
+
+import { Calendar } from 'react-native-calendars';
 
 const OrderDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { selectedCategory, selectedType, cost, location } = route.params;
+  const { selectedCategory, selectedType, baseCostPerDay = 0, location } = route.params;
+
+  // State for selected dates
+  const [selectedDates, setSelectedDates] = useState({});
+  const [totalCost, setTotalCost] = useState(0); // Initialize total cost to 0
+
+  useEffect(() => {
+    if (typeof baseCostPerDay !== 'number' || isNaN(baseCostPerDay)) {
+      console.error('Invalid baseCostPerDay:', baseCostPerDay);
+      setTotalCost(0); // Set a default value if the base cost is invalid
+    }
+  }, [baseCostPerDay]);
+
+  // Calculate and update total cost based on the number of selected dates
+  const updateTotalCost = (newSelectedDates) => {
+    const numberOfDays = Object.keys(newSelectedDates).length;
+    const newTotalCost = numberOfDays * baseCostPerDay;
+    setTotalCost(newTotalCost);
+  };
+
+  // Handle date selection and update total cost
+  const handleDayPress = (day) => {
+    const newSelectedDates = { ...selectedDates };
+    if (newSelectedDates[day.dateString]) {
+      delete newSelectedDates[day.dateString];
+    } else {
+      newSelectedDates[day.dateString] = { selected: true, marked: true };
+    }
+    setSelectedDates(newSelectedDates);
+    updateTotalCost(newSelectedDates);
+  };
 
   const handleEditDetailsPress = () => {
     navigation.navigate('EquipmentDetails');
@@ -39,13 +65,23 @@ const OrderDetails = () => {
       </View>
 
       <View style={styles.orderDetailsContainer}>
-        <Text style={styles.sectionTitle}>Cost</Text>
-        <Text style={styles.detailText}>{cost}</Text>
+        <Text style={styles.sectionTitle}>Location</Text>
+        <Text style={styles.detailText}>{location}</Text>
+      </View>
+
+      {/* Calendar for selecting rental dates */}
+      <View style={styles.orderDetailsContainer}>
+        <Text style={styles.sectionTitle}>Select Rental Dates</Text>
+        <Calendar
+          onDayPress={handleDayPress}
+          markedDates={selectedDates}
+          markingType={'multi-dot'}
+        />
       </View>
 
       <View style={styles.orderDetailsContainer}>
-        <Text style={styles.sectionTitle}>Location</Text>
-        <Text style={styles.detailText}>{location}</Text>
+        <Text style={styles.sectionTitle}>Total Cost</Text>
+        <Text style={styles.detailText}>{totalCost.toFixed(2)} GHS</Text>
       </View>
 
       <TouchableOpacity style={styles.editButton} onPress={handleEditDetailsPress}>
@@ -58,7 +94,6 @@ const OrderDetails = () => {
     </ScrollView>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

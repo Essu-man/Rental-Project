@@ -11,6 +11,25 @@ const equipmentCategories = [
 ];
 
 const equipmentData = [
+
+  {
+    id: '4',
+    name: 'Plow',
+    location: 'Kumasi, Ghana',
+    price: '₵110/Day',
+    trips: '30 Rentals',
+    rating: '4.9',
+    imageUrl: require('../assets/cat.plow.png'),
+  },
+  {
+    id: '5',
+    name: 'Harvester',
+    location: 'Kumasi, Ghana',
+    price: '₵150/Day',
+    trips: '30 Rentals',
+    rating: '4.9',
+    imageUrl: require('../assets/cat.harvester.jpg'),
+  },
   {
     id: '1',
     name: 'John Deere Tractor',
@@ -38,6 +57,7 @@ const equipmentData = [
     rating: '4.9',
     imageUrl: require('../assets/L331 Large Square Baler.png'),
   },
+ 
 ];
 
 const Home = ({ navigation }) => {
