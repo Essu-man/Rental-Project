@@ -40,7 +40,7 @@ const SignupScreen = () => {
                 color="#1D2A32"
                 name="chevron-left"
                 size={30}
-                onPress={() => navigation.goBack()} // Go back on press
+                onPress={() => navigation.goBack()} 
               />
             </View>
             <Text style={styles.title}>Let's Get Started!</Text>

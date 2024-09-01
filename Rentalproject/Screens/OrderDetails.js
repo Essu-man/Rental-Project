@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, Platform } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, Platform, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -8,7 +8,7 @@ import moment from 'moment';
 const OrderDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { selectedCategory, selectedType, baseCostPerDay = 0, location } = route.params;
+  const { selectedCategory, selectedType, baseCostPerDay = 0, location, imageUrl } = route.params;
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
@@ -20,7 +20,7 @@ const OrderDetails = () => {
     if (startDate && endDate) {
       const start = moment(startDate);
       const end = moment(endDate);
-      const numberOfDays = end.diff(start, 'days') + 1; // +1 to include the end date
+      const numberOfDays = end.diff(start, 'days') + 1; 
       const newTotalCost = numberOfDays * baseCostPerDay;
       setTotalCost(newTotalCost.toFixed(2));
     }
@@ -39,10 +39,14 @@ const OrderDetails = () => {
 
   const handleConfirmOrderPress = () => {
     if (startDate && endDate) {
-      alert(`Order confirmed!\nStart Date: ${startDate}\nEnd Date: ${endDate}`);
+      alert(`Order confirmed!\nStart Date: ${formatDate(startDate)}\nEnd Date: ${formatDate(endDate)}`);
     } else {
       Alert.alert('Error', 'Please select both start and end dates.');
     }
+  };
+
+  const formatDate = (date) => {
+    return moment(date).format('D MMMM YYYY');
   };
 
   return (
@@ -57,7 +61,13 @@ const OrderDetails = () => {
 
       <View style={styles.orderDetailsContainer}>
         <Text style={styles.sectionTitle}>Selected Equipment</Text>
-        <Text style={styles.detailText}>{selectedCategory} - {selectedType}</Text>
+        <View style={styles.equipmentContainer}>
+          <Image source={{ uri: imageUrl }} style={styles.equipmentImage} />
+          <View style={styles.equipmentInfo}>
+            <Text style={styles.detailText}>{selectedCategory} - {selectedType}</Text>
+            <Text style={styles.equipmentCost}>Cost: {baseCostPerDay} GHS per day</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.orderDetailsContainer}>
@@ -65,32 +75,21 @@ const OrderDetails = () => {
         <Text style={styles.detailText}>{location}</Text>
       </View>
 
-      {/* Date Picker for selecting rental dates */}
       <View style={styles.orderDetailsContainer}>
         <Text style={styles.sectionTitle}>Select Start Date</Text>
         <TouchableOpacity style={styles.dateButton} onPress={() => setShowStartPicker(true)}>
-          <Text style={styles.dateText}>{startDate || 'Select Start Date'}</Text>
+          <Text style={styles.dateText}>{startDate ? formatDate(startDate) : 'Select Start Date'}</Text>
         </TouchableOpacity>
-        {showStartPicker && (
-          <DateTimePicker
-            value={startDate ? new Date(startDate) : new Date()}
-            mode="date"
-            display="default"
-            onChange={(event, date) => handleDateChange(event, date, 'start')}
-          />
-        )}
         <Text style={styles.sectionTitle}>Select End Date</Text>
         <TouchableOpacity style={styles.dateButton} onPress={() => setShowEndPicker(true)}>
-          <Text style={styles.dateText}>{endDate || 'Select End Date'}</Text>
+          <Text style={styles.dateText}>{endDate ? formatDate(endDate) : 'Select End Date'}</Text>
         </TouchableOpacity>
-        {showEndPicker && (
-          <DateTimePicker
-            value={endDate ? new Date(endDate) : new Date()}
-            mode="date"
-            display="default"
-            onChange={(event, date) => handleDateChange(event, date, 'end')}
-          />
-        )}
+      </View>
+
+      <View style={styles.selectedDatesContainer}>
+        <Text style={styles.sectionTitle}>Selected Dates</Text>
+        <Text style={styles.dateRangeText}>{startDate ? `Start Date: ${formatDate(startDate)}` : 'Start Date: Not selected'}</Text>
+        <Text style={styles.dateRangeText}>{endDate ? `End Date: ${formatDate(endDate)}` : 'End Date: Not selected'}</Text>
       </View>
 
       <View style={styles.orderDetailsContainer}>
@@ -105,6 +104,26 @@ const OrderDetails = () => {
       <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmOrderPress}>
         <Text style={styles.confirmButtonText}>Confirm Order</Text>
       </TouchableOpacity>
+
+      {showStartPicker && (
+        <DateTimePicker
+          testID="startDatePicker"
+          value={new Date(startDate || Date.now())}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'start')}
+        />
+      )}
+
+      {showEndPicker && (
+        <DateTimePicker
+          testID="endDatePicker"
+          value={new Date(endDate || Date.now())}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'end')}
+        />
+      )}
     </ScrollView>
   );
 };
@@ -152,6 +171,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
   },
+  equipmentContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  equipmentImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40, 
+    marginRight: 15,
+  },
+  equipmentInfo: {
+    flex: 1,
+  },
+  equipmentCost: {
+    fontSize: 14,
+    color: '#333',
+    marginTop: 5,
+  },
   dateButton: {
     padding: 10,
     borderRadius: 8,
@@ -163,6 +200,18 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 14,
     color: '#333',
+  },
+  selectedDatesContainer: {
+    backgroundColor: '#e0f7fa',
+    padding: 15,
+    borderRadius: 8,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#00acc1',
+  },
+  dateRangeText: {
+    fontSize: 14,
+    color: '#00796b',
   },
   editButton: {
     backgroundColor: '#FFA500',

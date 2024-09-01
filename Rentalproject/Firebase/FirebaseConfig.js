@@ -12,14 +12,11 @@ const firebaseConfig = {
   measurementId: "G-ELRKKC4E73"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore and Auth
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// Function to add equipment to Firestore
 export const addEquipment = async (equipmentData) => {
   try {
     const docRef = await addDoc(collection(db, "equipment"), equipmentData);
@@ -29,7 +26,6 @@ export const addEquipment = async (equipmentData) => {
   }
 };
 
-// Function to retrieve all equipment from Firestore
 export const getEquipment = async () => {
   try {
     const querySnapshot = await getDocs(collection(db, "equipment"));

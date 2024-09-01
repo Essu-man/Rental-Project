@@ -113,7 +113,6 @@ const styles = StyleSheet.create({
     color: '#929292',
     textAlign: 'center',
   },
-  /** Form */
   form: {
     marginBottom: 24,
   },
@@ -126,7 +125,6 @@ const styles = StyleSheet.create({
     color: '#222',
     textAlign: 'center',
   },
-  /** Input */
   input: {
     marginBottom: 20,
   },
@@ -145,7 +143,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#222',
   },
-  /** Button */
   btn: {
     flexDirection: 'row',
     height: 50,

@@ -69,7 +69,7 @@ const Home = ({ navigation }) => {
 
   const handleEquipmentPress = (item) => {
     console.log('Navigating to EquipmentDetails with item:', item);
-    navigation.navigate('EquipmentDetails', { equipment: item }); // Pass the entire item
+    navigation.navigate('EquipmentDetails', { equipment: item }); 
   };
 
   const renderCategoryItem = ({ item }) => (
