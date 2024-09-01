@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, Platform, Image } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -9,7 +9,6 @@ const OrderDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { selectedCategory, selectedType, baseCostPerDay = 0, location, imageUrl } = route.params;
-
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [totalCost, setTotalCost] = useState(0);
@@ -29,10 +28,10 @@ const OrderDetails = () => {
   const handleDateChange = (event, selectedDate, type) => {
     const currentDate = selectedDate || new Date();
     if (type === 'start') {
-      setShowStartPicker(false); // Hide the picker after selection
+      setShowStartPicker(false); 
       setStartDate(moment(currentDate).format('YYYY-MM-DD'));
     } else if (type === 'end') {
-      setShowEndPicker(false); // Hide the picker after selection
+      setShowEndPicker(false); 
       setEndDate(moment(currentDate).format('YYYY-MM-DD'));
     }
   };
@@ -72,7 +71,10 @@ const OrderDetails = () => {
 
       <View style={styles.orderDetailsContainer}>
         <Text style={styles.sectionTitle}>Location</Text>
-        <Text style={styles.detailText}>{location}</Text>
+        <View style={styles.locationContainer}>
+          <Ionicons name="location-sharp" size={20} color="#FF6347" />
+          <Text style={styles.locationText}>{location}</Text>
+        </View>
       </View>
 
       <View style={styles.orderDetailsContainer}>
@@ -187,6 +189,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#333',
     marginTop: 5,
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  locationText: {
+    fontSize: 14,
+    color: '#333',
+    marginLeft: 5,
   },
   dateButton: {
     padding: 10,

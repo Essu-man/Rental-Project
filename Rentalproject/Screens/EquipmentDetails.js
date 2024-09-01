@@ -97,7 +97,6 @@ const EquipmentDetails = () => {
 
   return (
     <ScrollView style={styles.container}>
-      {/* Back Arrow */}
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={24} color="#333" />
       </TouchableOpacity>

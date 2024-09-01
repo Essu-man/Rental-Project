@@ -13,25 +13,25 @@ const equipmentCategories = [
 const equipmentData = [
 
   {
-    id: '4',
+    id: '1',
     name: 'Plow',
-    location: 'Kumasi, Ghana',
+    location: 'Accra, Ghana',
     price: '₵110/Day',
     trips: '30 Rentals',
-    rating: '4.9',
+    rating: '4.6',
     imageUrl: require('../assets/cat.plow.png'),
   },
   {
-    id: '5',
+    id: '2',
     name: 'Harvester',
-    location: 'Kumasi, Ghana',
+    location: 'Accra, Ghana',
     price: '₵150/Day',
     trips: '30 Rentals',
     rating: '4.9',
     imageUrl: require('../assets/cat.harvester.jpg'),
   },
   {
-    id: '1',
+    id: '3',
     name: 'John Deere Tractor',
     location: 'Accra, Ghana',
     price: '₵120/Day',
@@ -40,7 +40,7 @@ const equipmentData = [
     imageUrl: require('../assets/John Deere 1025R.png'),
   },
   {
-    id: '2',
+    id: '4',
     name: 'Case IH Harvester',
     location: 'Accra, Ghana',
     price: '₵150/Day',
@@ -49,7 +49,7 @@ const equipmentData = [
     imageUrl: require('../assets/Case IH 8240.png'),
   },
   {
-    id: '3',
+    id: '5',
     name: 'Large Square Baler',
     location: 'Accra, Ghana',
     price: '₵150/Day',
