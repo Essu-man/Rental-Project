@@ -15,10 +15,10 @@ import {
 const imageUrls = {
   Tractors: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.tractor.jpg?alt=media&token=3fa44470-5dd9-4fae-a844-9d284fdfe60a',
   Harvesters: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.harvester.jpg?alt=media&token=910c8753-097f-4e1f-b3c7-1d747180520c',
-  Balers: '',
-  Plows: '',
-  Sprayers:'' ,
-  Cultivators: '',
+  Balers: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.Baler.png?alt=media&token=dcdfdfa2-643d-409b-a732-293b021698e1',
+  Plows: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.plow.png?alt=media&token=b2484ed2-2769-435d-8226-b93eb0a812e9',
+  Sprayers:'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.sprayer.png?alt=media&token=846473e1-fabc-4e9f-9b59-7f6237e478cd' ,
+  Cultivators: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.Cultivators.png?alt=media&token=a159b009-7bae-4dad-acdf-8a80126536a9',
 };
 
 // Firebase Storage URLs for equipment types

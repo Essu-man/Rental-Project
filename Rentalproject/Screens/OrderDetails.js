@@ -5,10 +5,27 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 
+const images = {
+  Tractors: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.tractor.jpg?alt=media&token=3fa44470-5dd9-4fae-a844-9d284fdfe60a',
+  Harvesters: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.harvester.jpg?alt=media&token=910c8753-097f-4e1f-b3c7-1d747180520c',
+  Balers: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.Baler.png?alt=media&token=dcdfdfa2-643d-409b-a732-293b021698e1',
+  Plows: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.plow.png?alt=media&token=b2484ed2-2769-435d-8226-b93eb0a812e9',
+  Sprayers: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.sprayer.png?alt=media&token=846473e1-fabc-4e9f-9b59-7f6237e478cd',
+  Cultivators: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.Cultivators.png?alt=media&token=a159b009-7bae-4dad-acdf-8a80126536a9',
+};
+
+const typeImages = {
+  'Utility Tractor': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Tractor%2Futility-tractor.png?alt=media&token=1dbb45b2-f99c-40ee-9f6d-707ec3da6d5b',
+  'Raw Crop Tractor': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Tractor%2FRaw-Crop-tractor.png?alt=media&token=6ec06ba2-324b-420a-a0a6-5250f377dcf9',
+  'Compact Tractor': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Tractor%2FCompact-tractor.png?alt=media&token=a442ec56-2444-4734-8c7a-71e8a2c3c7f5',
+  'Combine Harvester': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Harvester%2FCombine%20Harvester.png?alt=media&token=003fb05f-b58a-4b2f-ada5-6d7b700b924c',
+  'Forage Harvester': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Harvester%2FForage.png?alt=media&token=3450406f-25b3-4d75-a5ba-296b65df0544',
+};
+
 const OrderDetails = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { selectedCategory, selectedType, baseCostPerDay = 0, location, imageUrl } = route.params;
+  const { selectedCategory, selectedType, baseCostPerDay = 0, location } = route.params;
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [totalCost, setTotalCost] = useState(0);
@@ -38,7 +55,15 @@ const OrderDetails = () => {
 
   const handleConfirmOrderPress = () => {
     if (startDate && endDate) {
-      Alert.alert(`Order confirmed!\nStart Date: ${formatDate(startDate)}\nEnd Date: ${formatDate(endDate)}`);
+      navigation.navigate('Pickup', {
+        selectedCategory,
+        selectedType,
+        baseCostPerDay,
+        startDate,
+        endDate,
+        totalCost,
+        location,
+      });
     } else {
       Alert.alert('Error', 'Please select both start and end dates.');
     }
@@ -47,6 +72,10 @@ const OrderDetails = () => {
   const formatDate = (date) => {
     return moment(date).format('D MMMM YYYY');
   };
+
+  const equipmentImageUri = selectedType && typeImages[selectedType]
+    ? typeImages[selectedType]
+    : images[selectedCategory] || 'https://example.com/default-image.png'; 
 
   return (
     <ScrollView style={styles.container}>
@@ -61,7 +90,7 @@ const OrderDetails = () => {
       <View style={styles.orderDetailsContainer}>
         <Text style={styles.sectionTitle}>Selected Equipment</Text>
         <View style={styles.equipmentContainer}>
-          <Image source={{ uri: imageUrl }} style={styles.equipmentImage} />
+          <Image source={{ uri: equipmentImageUri }} style={styles.equipmentImage} />
           <View style={styles.equipmentInfo}>
             <Text style={styles.detailText}>{selectedCategory} - {selectedType}</Text>
             <Text style={styles.equipmentCost}>Cost: {baseCostPerDay} GHS per day</Text>
@@ -91,7 +120,7 @@ const OrderDetails = () => {
             onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'start')}
           />
         )}
-        
+
         <Text style={styles.sectionTitle}>Select End Date</Text>
         <TouchableOpacity style={styles.dateButton} onPress={() => setShowEndPicker(true)}>
           <Text style={styles.dateText}>{endDate ? formatDate(endDate) : 'Select End Date'}</Text>
@@ -132,121 +161,103 @@ const OrderDetails = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
     backgroundColor: '#F5F5F5',
-    padding: 20,
   },
   backButton: {
-    position: 'absolute',
-    left: -15,
-    top: 0,
-    padding: 15,
-    zIndex: 1,
+    marginBottom: 16,
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 24,
   },
   orderSummaryTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginTop: 25,
   },
   orderDetailsContainer: {
-    backgroundColor: '#fff',
-    padding: 15,
+    marginBottom: 24,
+    padding: 16,
+    backgroundColor: '#FFFFFF',
     borderRadius: 8,
-    marginBottom: 15,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    elevation: 2,
+    elevation: 3,
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  detailText: {
-    fontSize: 14,
-    color: '#333',
+    marginBottom: 12,
   },
   equipmentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   equipmentImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40, 
-    marginRight: 15,
+    width: 65,
+    height: 60,
+    borderRadius: 40,
+    marginRight: 16,
   },
   equipmentInfo: {
     flex: 1,
   },
+  detailText: {
+    fontSize: 16,
+  },
   equipmentCost: {
-    fontSize: 14,
-    color: '#333',
-    marginTop: 5,
+    fontSize: 16,
+    marginTop: 8,
+    color: '#FF6347',
   },
   locationContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 5,
   },
   locationText: {
-    fontSize: 14,
-    color: '#333',
-    marginLeft: 5,
+    fontSize: 16,
+    marginLeft: 8,
   },
   dateButton: {
-    padding: 10,
+    padding: 12,
+    backgroundColor: '#E0E0E0',
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
-    marginBottom: 15,
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 16,
   },
   dateText: {
-    fontSize: 14,
-    color: '#333',
+    fontSize: 16,
   },
   selectedDatesContainer: {
-    backgroundColor: '#e0f7fa',
-    padding: 15,
+    marginBottom: 24,
+    padding: 16,
+    backgroundColor: '#FFFFFF',
     borderRadius: 8,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#00acc1',
+    elevation: 3,
   },
   dateRangeText: {
-    fontSize: 14,
-    color: '#00796b',
+    fontSize: 16,
+    marginTop: 8,
   },
   editButton: {
+    padding: 12,
     backgroundColor: '#FFA500',
-    padding: 15,
     borderRadius: 8,
     alignItems: 'center',
-    marginBottom: 15,
+    marginBottom: 16,
   },
   editButtonText: {
-    color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
   confirmButton: {
-    backgroundColor: '#3d9d75',
-    padding: 15,
+    padding: 12,
+    backgroundColor: '#32CD32',
     borderRadius: 8,
     alignItems: 'center',
-    marginTop: 10,
   },
   confirmButtonText: {
-    color: '#fff',
     fontSize: 16,
-    fontWeight: 'bold',
+    color: '#FFFFFF',
   },
 });
 
