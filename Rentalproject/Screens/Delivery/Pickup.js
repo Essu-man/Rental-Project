@@ -9,12 +9,12 @@ const DeliveryPickup = () => {
   const [selectedDeliveryOption, setSelectedDeliveryOption] = useState('Door Delivery');
   
   const handleChangeAddress = () => {
-    navigation.navigate('Address'); // Make sure AddressScreen is defined in your navigation stack
+    navigation.navigate('Address'); 
   };
 
   return (
     <View style={styles.container}>
-      {/* Progress Indicator */}
+  
       <View style={styles.progressContainer}>
         <View style={styles.progressStep}>
           <View style={[styles.line, {backgroundColor: '#3d9d75'}]} />
@@ -30,7 +30,6 @@ const DeliveryPickup = () => {
         </View>
       </View>
 
-      {/* Address Section */}
       <View style={styles.card}>
         <Text style={styles.subHeader}>ADDRESS</Text>
         <View style={styles.addressContainer}>
@@ -42,7 +41,6 @@ const DeliveryPickup = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Delivery Options */}
       <View style={styles.card}>
         <Text style={styles.subHeader}>DELIVERY</Text>
         <TouchableOpacity
@@ -61,7 +59,6 @@ const DeliveryPickup = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Footer Buttons */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.confirmButton} onPress={() => navigation.navigate('PaymentScreen')}>
           <Text style={styles.confirmButtonText}>CONFIRM ORDER</Text>

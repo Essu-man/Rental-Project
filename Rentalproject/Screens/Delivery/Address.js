@@ -7,7 +7,6 @@ const Address = () => {
   const navigation = useNavigation();
 
   const handleSaveAddress = () => {
-    // Save the address and navigate back
     navigation.goBack();
   };
 
