@@ -29,10 +29,10 @@ const OrderDetails = () => {
   const handleDateChange = (event, selectedDate, type) => {
     const currentDate = selectedDate || new Date();
     if (type === 'start') {
-      setShowStartPicker(Platform.OS === 'ios');
+      setShowStartPicker(false); // Hide the picker after selection
       setStartDate(moment(currentDate).format('YYYY-MM-DD'));
     } else if (type === 'end') {
-      setShowEndPicker(Platform.OS === 'ios');
+      setShowEndPicker(false); // Hide the picker after selection
       setEndDate(moment(currentDate).format('YYYY-MM-DD'));
     }
   };
@@ -80,10 +80,29 @@ const OrderDetails = () => {
         <TouchableOpacity style={styles.dateButton} onPress={() => setShowStartPicker(true)}>
           <Text style={styles.dateText}>{startDate ? formatDate(startDate) : 'Select Start Date'}</Text>
         </TouchableOpacity>
+        {showStartPicker && (
+          <DateTimePicker
+            testID="startDatePicker"
+            value={new Date(startDate || Date.now())}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'start')}
+          />
+        )}
+        
         <Text style={styles.sectionTitle}>Select End Date</Text>
         <TouchableOpacity style={styles.dateButton} onPress={() => setShowEndPicker(true)}>
           <Text style={styles.dateText}>{endDate ? formatDate(endDate) : 'Select End Date'}</Text>
         </TouchableOpacity>
+        {showEndPicker && (
+          <DateTimePicker
+            testID="endDatePicker"
+            value={new Date(endDate || Date.now())}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'end')}
+          />
+        )}
       </View>
 
       <View style={styles.selectedDatesContainer}>
@@ -104,26 +123,6 @@ const OrderDetails = () => {
       <TouchableOpacity style={styles.confirmButton} onPress={handleConfirmOrderPress}>
         <Text style={styles.confirmButtonText}>Confirm Order</Text>
       </TouchableOpacity>
-
-      {showStartPicker && (
-        <DateTimePicker
-          testID="startDatePicker"
-          value={new Date(startDate || Date.now())}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'start')}
-        />
-      )}
-
-      {showEndPicker && (
-        <DateTimePicker
-          testID="endDatePicker"
-          value={new Date(endDate || Date.now())}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => handleDateChange(event, selectedDate, 'end')}
-        />
-      )}
     </ScrollView>
   );
 };
