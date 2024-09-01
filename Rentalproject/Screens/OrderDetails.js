@@ -19,7 +19,7 @@ const OrderDetails = () => {
     if (startDate && endDate) {
       const start = moment(startDate);
       const end = moment(endDate);
-      const numberOfDays = end.diff(start, 'days') + 1; 
+      const numberOfDays = end.diff(start, 'days') + 1;
       const newTotalCost = numberOfDays * baseCostPerDay;
       setTotalCost(newTotalCost.toFixed(2));
     }
@@ -28,17 +28,17 @@ const OrderDetails = () => {
   const handleDateChange = (event, selectedDate, type) => {
     const currentDate = selectedDate || new Date();
     if (type === 'start') {
-      setShowStartPicker(false); 
+      setShowStartPicker(false);
       setStartDate(moment(currentDate).format('YYYY-MM-DD'));
     } else if (type === 'end') {
-      setShowEndPicker(false); 
+      setShowEndPicker(false);
       setEndDate(moment(currentDate).format('YYYY-MM-DD'));
     }
   };
 
   const handleConfirmOrderPress = () => {
     if (startDate && endDate) {
-      alert(`Order confirmed!\nStart Date: ${formatDate(startDate)}\nEnd Date: ${formatDate(endDate)}`);
+      Alert.alert(`Order confirmed!\nStart Date: ${formatDate(startDate)}\nEnd Date: ${formatDate(endDate)}`);
     } else {
       Alert.alert('Error', 'Please select both start and end dates.');
     }

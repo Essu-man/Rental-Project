@@ -11,12 +11,25 @@ import {
   View,
 } from 'react-native';
 
-import BalerImage from '../assets/328 Small Square Baler.png';
-import CultivatorImage from '../assets/cat.Cultivators.png';
-import HarvesterImage from '../assets/cat.harvester.jpg';
-import PlowImage from '../assets/cat.plow.png';
-import SprayerImage from '../assets/cat.sprayer.png';
-import TractorImage from '../assets/cat.tractor.jpg';
+// Firebase Storage URLs for categories
+const imageUrls = {
+  Tractors: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.tractor.jpg?alt=media&token=3fa44470-5dd9-4fae-a844-9d284fdfe60a',
+  Harvesters: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.harvester.jpg?alt=media&token=910c8753-097f-4e1f-b3c7-1d747180520c',
+  Balers: '',
+  Plows: '',
+  Sprayers:'' ,
+  Cultivators: '',
+};
+
+// Firebase Storage URLs for equipment types
+const typeImages = {
+  'Utility Tractor': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Tractor%2Futility-tractor.png?alt=media&token=1dbb45b2-f99c-40ee-9f6d-707ec3da6d5b',
+  'Raw Crop Tractor': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Tractor%2FRaw-Crop-tractor.png?alt=media&token=6ec06ba2-324b-420a-a0a6-5250f377dcf9',
+  'Compact Tractor': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Tractor%2FCompact-tractor.png?alt=media&token=a442ec56-2444-4734-8c7a-71e8a2c3c7f5',
+  'Combine Harvester': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Harvester%2FCombine%20Harvester.png?alt=media&token=003fb05f-b58a-4b2f-ada5-6d7b700b924c',
+  'Forage Harvester': 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/Harvester%2FForage.png?alt=media&token=3450406f-25b3-4d75-a5ba-296b65df0544',
+  // Add URLs for other types similarly
+};
 
 const equipmentCategories = [
   { id: '1', name: 'Tractors', cost: '₵120/Day' },
@@ -72,22 +85,17 @@ const EquipmentDetails = () => {
   };
 
   const renderEquipmentImage = () => {
-    switch (selectedCategory) {
-      case 'Tractors':
-        return <Image source={TractorImage} style={styles.equipmentImage} />;
-      case 'Harvesters':
-        return <Image source={HarvesterImage} style={styles.equipmentImage} />;
-      case 'Balers':
-        return <Image source={BalerImage} style={styles.equipmentImage} />;
-      case 'Plows':
-        return <Image source={PlowImage} style={styles.equipmentImage} />;
-      case 'Sprayers':
-        return <Image source={SprayerImage} style={styles.equipmentImage} />;
-      case 'Cultivators':
-        return <Image source={CultivatorImage} style={styles.equipmentImage} />;
-      default:
-        return null;
+    if (selectedType) {
+      const typeImageUrl = typeImages[selectedType];
+      return typeImageUrl ? <Image source={{ uri: typeImageUrl }} style={styles.equipmentImage} /> : null;
     }
+
+    if (selectedCategory) {
+      const categoryImageUrl = imageUrls[selectedCategory];
+      return categoryImageUrl ? <Image source={{ uri: categoryImageUrl }} style={styles.equipmentImage} /> : null;
+    }
+
+    return null;
   };
 
   const getCategoryCost = () => {
@@ -126,21 +134,21 @@ const EquipmentDetails = () => {
       </View>
 
       <View style={styles.infoRowContainer}>
-  <View style={styles.infoCard}>
-    <Ionicons name="cash" size={24} color="#3d9d75" style={styles.icon} />
-    <View style={styles.infoTextContainer}>
-      <Text style={styles.infoTitle}>Cost</Text>
-      <Text style={styles.infoText}>{getCategoryCost()}</Text>
-    </View>
-  </View>
-  <View style={styles.infoCard}>
-    <Ionicons name="location" size={24} color="#3d9d75" style={styles.icon} />
-    <View style={styles.infoTextContainer}>
-      <Text style={styles.infoTitle}>Location</Text>
-      <Text style={styles.infoText}>Accra, Ghana</Text>
-    </View>
-  </View>
-</View>
+        <View style={styles.infoCard}>
+          <Ionicons name="cash" size={24} color="#3d9d75" style={styles.icon} />
+          <View style={styles.infoTextContainer}>
+            <Text style={styles.infoTitle}>Cost</Text>
+            <Text style={styles.infoText}>{getCategoryCost()}</Text>
+          </View>
+        </View>
+        <View style={styles.infoCard}>
+          <Ionicons name="location" size={24} color="#3d9d75" style={styles.icon} />
+          <View style={styles.infoTextContainer}>
+            <Text style={styles.infoTitle}>Location</Text>
+            <Text style={styles.infoText}>Accra, Ghana</Text>
+          </View>
+        </View>
+      </View>
 
       <View style={styles.section}>
         <Text style={styles.subHeader}>Category</Text>

@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { getDownloadURL, ref } from 'firebase/storage'; 
+import { storage } from '../Firebase/FirebaseConfig'; 
 
 const equipmentCategories = [
   { id: '1', name: 'Tractors' },
@@ -11,7 +13,6 @@ const equipmentCategories = [
 ];
 
 const equipmentData = [
-
   {
     id: '1',
     name: 'Plow',
@@ -19,7 +20,8 @@ const equipmentData = [
     price: '₵110/Day',
     trips: '30 Rentals',
     rating: '4.6',
-    imageUrl: require('../assets/cat.plow.png'),
+    imagePath: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.plow.png?alt=media&token=b2484ed2-2769-435d-8226-b93eb0a812e9', 
+    category: 'Plows',
   },
   {
     id: '2',
@@ -28,48 +30,56 @@ const equipmentData = [
     price: '₵150/Day',
     trips: '30 Rentals',
     rating: '4.9',
-    imageUrl: require('../assets/cat.harvester.jpg'),
+    imagePath: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/cat.harvester.jpg?alt=media&token=7fc424d5-792d-4c55-8750-c22ad60cb2e6',
+    category: 'Harvesters',
   },
   {
     id: '3',
-    name: 'John Deere Tractor',
-    location: 'Accra, Ghana',
-    price: '₵120/Day',
-    trips: '45 Rentals',
-    rating: '4.8',
-    imageUrl: require('../assets/John Deere 1025R.png'),
-  },
-  {
-    id: '4',
-    name: 'Case IH Harvester',
-    location: 'Accra, Ghana',
-    price: '₵150/Day',
-    trips: '30 Rentals',
-    rating: '4.9',
-    imageUrl: require('../assets/Case IH 8240.png'),
-  },
-  {
-    id: '5',
     name: 'Large Square Baler',
     location: 'Accra, Ghana',
     price: '₵150/Day',
     trips: '30 Rentals',
     rating: '4.9',
-    imageUrl: require('../assets/L331 Large Square Baler.png'),
-  },
- 
+    imagePath: 'https://firebasestorage.googleapis.com/v0/b/my-agrirent.appspot.com/o/L331%20Large%20Square%20Baler.png?alt=media&token=63d780bf-e0da-42f8-b2be-84ef4483a0c7',
+    },
+
 ];
 
 const Home = ({ navigation }) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [filteredEquipment, setFilteredEquipment] = useState(equipmentData);
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const handleCategorySelect = (id) => {
-    setSelectedCategory(id);
+  useEffect(() => {
+    const fetchImages = async () => {
+      const updatedEquipmentData = await Promise.all(
+        equipmentData.map(async (item) => {
+          const imageUrl = await getDownloadURL(ref(storage, item.imagePath));
+          return { ...item, imageUrl };
+        })
+      );
+      setFilteredEquipment(updatedEquipmentData);
+    };
+
+    fetchImages();
+  }, []);
+
+  useEffect(() => {
+    const filteredData = equipmentData.filter((item) => {
+      const matchesCategory = selectedCategory ? item.category === selectedCategory : true;
+      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCategory && matchesSearch;
+    });
+
+    setFilteredEquipment(filteredData);
+  }, [selectedCategory, searchQuery]);
+
+  const handleCategorySelect = (categoryName) => {
+    setSelectedCategory(categoryName === selectedCategory ? null : categoryName);
   };
 
   const handleEquipmentPress = (item) => {
-    console.log('Navigating to EquipmentDetails with item:', item);
-    navigation.navigate('EquipmentDetails', { equipment: item }); 
+    navigation.navigate('EquipmentDetails', { equipment: item });
   };
 
   const renderCategoryItem = ({ item }) => (
@@ -77,16 +87,16 @@ const Home = ({ navigation }) => {
       style={[
         styles.categoryBox,
         {
-          backgroundColor: item.id === selectedCategory ? '#5AE4A8' : '#E0E0E0',
+          backgroundColor: item.name === selectedCategory ? '#3d9d75' : '#E0E0E0',
         },
       ]}
-      onPress={() => handleCategorySelect(item.id)}
+      onPress={() => handleCategorySelect(item.name)}
     >
       <Text
         style={[
           styles.categoryText,
           {
-            color: item.id === selectedCategory ? '#FFF' : '#333',
+            color: item.name === selectedCategory ? '#FFF' : '#333',
           },
         ]}
       >
@@ -99,7 +109,7 @@ const Home = ({ navigation }) => {
     <View style={styles.equipmentCard}>
       <TouchableOpacity onPress={() => handleEquipmentPress(item)}>
         {item.imageUrl ? (
-          <Image source={item.imageUrl} style={styles.equipmentImage} />
+          <Image source={{ uri: item.imageUrl }} style={styles.equipmentImage} />
         ) : (
           <Text style={styles.imageFallback}>Image not found</Text>
         )}
@@ -142,6 +152,8 @@ const Home = ({ navigation }) => {
         <TextInput
           placeholder="Search equipment..."
           style={styles.searchInput}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
         />
         <TouchableOpacity style={styles.filterButton}>
           <Ionicons name="options-outline" size={20} color="#FFF" />
@@ -157,7 +169,7 @@ const Home = ({ navigation }) => {
         />
       </View>
       <FlatList
-        data={equipmentData}
+        data={filteredEquipment}
         renderItem={renderEquipmentItem}
         keyExtractor={(item) => item.id}
       />
