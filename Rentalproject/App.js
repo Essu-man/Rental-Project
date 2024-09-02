@@ -9,6 +9,7 @@ import Splash from './Screens/Splash';
 const Stack = createStackNavigator();
 
 const App = () => {
+  console.log("App Component Loaded");
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">

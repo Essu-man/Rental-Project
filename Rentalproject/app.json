@@ -5,6 +5,13 @@
     "version": "1.0.0",
     "android": {
       "package": "com.anonymous.Rentalproject"
+    },
+    "ios": {
+      "bundleIdentifier": "com.anonymous.Rentalproject"
+    },
+    "entryPoint": "./App.js",
+    "updates": {
+      "fallbackToCacheTimeout": 0
     }
   }
 }

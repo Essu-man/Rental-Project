@@ -26,6 +26,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="com.anonymous.Rentalproject"/>
         <data android:scheme="exp+rentalproject"/>
+        <data android:scheme="rentalproject"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" android:exported="false"/>

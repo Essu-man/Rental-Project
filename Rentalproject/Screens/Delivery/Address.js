@@ -1,17 +1,44 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, FlatList } from 'react-native';
+import firestore from '@react-native-firebase/firestore';
 
-const AddressManagement = ({ navigation, route }) => {
-  const [address, setAddress] = useState('');
-  const [savedAddresses, setSavedAddresses] = useState([]); // Fetch this from storage or API
+const AddressManagement = ({ navigation }) => {
+  const [street, setStreet] = useState('');
+  const [city, setCity] = useState('');
+  const [region, setRegion] = useState('');
+  const [savedAddresses, setSavedAddresses] = useState([]);
 
-  const handleSaveAddress = () => {
-    if (address) {
-      setSavedAddresses([...savedAddresses, address]);
-      setAddress('');
-      Alert.alert('Success', 'Address saved successfully!');
+  useEffect(() => {
+    const unsubscribe = firestore()
+      .collection('addresses')
+      .onSnapshot(querySnapshot => {
+        const addresses = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setSavedAddresses(addresses);
+      });
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleSaveAddress = async () => {
+    if (street && city && region) {
+      try {
+        await firestore().collection('addresses').add({
+          street,
+          city,
+          region,
+        });
+        setStreet('');
+        setCity('');
+        setRegion('');
+        Alert.alert('Success', 'Address saved successfully!');
+      } catch (error) {
+        Alert.alert('Error', 'Failed to save address.');
+      }
     } else {
-      Alert.alert('Error', 'Please enter an address.');
+      Alert.alert('Error', 'Please fill in all fields.');
     }
   };
 
@@ -19,24 +46,42 @@ const AddressManagement = ({ navigation, route }) => {
     navigation.navigate('OrderDetails', { selectedAddress });
   };
 
+  const renderAddress = ({ item }) => (
+    <TouchableOpacity onPress={() => handleSelectAddress(item)}>
+      <Text style={styles.savedAddress}>{`${item.street}, ${item.city}, ${item.region}`}</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Manage Addresses</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter Address"
-        value={address}
-        onChangeText={setAddress}
+        placeholder="Street"
+        value={street}
+        onChangeText={setStreet}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="City"
+        value={city}
+        onChangeText={setCity}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Region"
+        value={region}
+        onChangeText={setRegion}
       />
       <TouchableOpacity style={styles.button} onPress={handleSaveAddress}>
         <Text style={styles.buttonText}>Save Address</Text>
       </TouchableOpacity>
       <Text style={styles.subtitle}>Saved Addresses</Text>
-      {savedAddresses.map((addr, index) => (
-        <TouchableOpacity key={index} onPress={() => handleSelectAddress(addr)}>
-          <Text style={styles.savedAddress}>{addr}</Text>
-        </TouchableOpacity>
-      ))}
+      <FlatList
+        data={savedAddresses}
+        renderItem={renderAddress}
+        keyExtractor={item => item.id}
+      />
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Text style={styles.backButton}>Back</Text>
       </TouchableOpacity>
