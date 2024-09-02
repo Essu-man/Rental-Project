@@ -6,10 +6,10 @@ const PickupDeliveryOptions = () => {
   const navigation = useNavigation();
   const route = useRoute();
   
-  // Destructure params with default values
+ 
   const { selectedCategory = '', selectedType = '', baseCostPerDay = 0, startDate, endDate, totalCost } = route.params || {};
   
-  const [option, setOption] = useState('pickup'); // Default to 'pickup'
+  const [option, setOption] = useState('pickup'); 
   const [pickupLocation, setPickupLocation] = useState('');
   const [deliveryAddress, setDeliveryAddress] = useState('');
 
@@ -20,7 +20,7 @@ const PickupDeliveryOptions = () => {
       Alert.alert('Error', 'Please enter a delivery address.');
     } else {
       Alert.alert('Order Confirmed', `Selected Option: ${option}\nLocation: ${option === 'pickup' ? pickupLocation : deliveryAddress}`);
-      // Navigate to the next screen or handle order confirmation logic
+     
       navigation.navigate('OrderConfirmation', {
         selectedCategory,
         selectedType,

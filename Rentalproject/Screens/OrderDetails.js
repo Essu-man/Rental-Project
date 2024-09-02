@@ -165,22 +165,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   backButton: {
-    marginBottom: 16,
+    position: 'absolute',
+    left: -15,
+    top: 0,
+    padding: 15,
+    zIndex: 1,
   },
   headerContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 10,
   },
   orderSummaryTitle: {
     fontSize: 24,
     fontWeight: 'bold',
+    marginTop: 25,
   },
   orderDetailsContainer: {
-    marginBottom: 24,
-    padding: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
+    padding: 15,
     borderRadius: 8,
-    elevation: 3,
+    marginBottom: 15,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+    elevation: 2,
   },
   sectionTitle: {
     fontSize: 18,
@@ -206,7 +215,7 @@ const styles = StyleSheet.create({
   equipmentCost: {
     fontSize: 16,
     marginTop: 8,
-    color: '#FF6347',
+    color: '#00796b',
   },
   locationContainer: {
     flexDirection: 'row',
@@ -228,15 +237,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   selectedDatesContainer: {
-    marginBottom: 24,
-    padding: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#e0f7fa',
+    padding: 15,
     borderRadius: 8,
-    elevation: 3,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#00acc1',
   },
   dateRangeText: {
-    fontSize: 16,
-    marginTop: 8,
+    fontSize: 14,
+    color: '#00796b',
   },
   editButton: {
     padding: 12,
@@ -251,7 +261,7 @@ const styles = StyleSheet.create({
   },
   confirmButton: {
     padding: 12,
-    backgroundColor: '#32CD32',
+    backgroundColor: '#3d9d75',
     borderRadius: 8,
     alignItems: 'center',
   },
