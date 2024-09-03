@@ -9,7 +9,6 @@ import Settings from '../Screens/Nav/Settings';
 import OrderDetails from '../Screens/OrderDetails';
 import Payment from '../Screens/Payment';
 import Pickup from '../Screens/Delivery/Pickup';
-import Address from '../Screens/Delivery/Address';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -70,7 +69,6 @@ const AppNavigator = () => {
       <Stack.Screen name="OrderDetails" component={OrderDetails} options={{ headerShown: false}} />
       <Stack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
       <Stack.Screen name="Pickup" component={Pickup} options={{ headerShown: false}}/>
-      <Stack.Screen name="Address" component={Address} options={{ headerShown: false}}/>
     </Stack.Navigator>
   );
 };
